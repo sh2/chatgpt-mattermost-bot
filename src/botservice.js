@@ -41,7 +41,8 @@ wsClient.addMessageListener(async function (event) {
         if (post.root_id === "" && (!event.data.mentions || (!JSON.parse(event.data.mentions).includes(meId)))) {
             // we're not in a thread and we are not mentioned - ignore the message
         } else {
-            if (post.user_id !== meId) {
+            const username = (await mmClient.getUser(post.user_id)).username;
+            if (post.user_id !== meId && !username.startsWith("ai-")) {
                 const prompt = (await mmClient.getChannel(post.channel_id)).header;
                 const chatmessages = [
                     {
