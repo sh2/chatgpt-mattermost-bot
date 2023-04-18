@@ -42,10 +42,11 @@ wsClient.addMessageListener(async function (event) {
             // we're not in a thread and we are not mentioned - ignore the message
         } else {
             if (post.user_id !== meId) {
+                const prompt = (await mmClient.getChannel(post.channel_id)).header;
                 const chatmessages = [
                     {
                         "role": "system",
-                        "content": `You are a helpful assistant named ${name} who provides succinct answers in Markdown format.`
+                        "content": prompt
                     },
                 ]
 
