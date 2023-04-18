@@ -1,3 +1,8 @@
+# カスタマイズ版
+
+- チャンネルヘッダーを初期プロンプトとして使う機能を実装
+- 「ai-」で始まるユーザーの発言に反応しないように修正
+
 # A ChatGPT-powered Chatbot for Mattermost
 
 ![A chat window in Mattermost showing the chat between the OpenAI bot and "yGuy"](./mattermost-chat.png)
