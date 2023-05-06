@@ -103,6 +103,18 @@ wsClient.addMessageListener(async function (event) {
                     } catch(e) {
                         clearInterval(typingInterval)
                         log.error(e)
+                        try {
+                            const errorPost = await mmClient.createPost({
+                                message: "エラーが発生しました。少し待ってから再度試してみてください。\n"
+                                    + "```\n"
+                                    + e.stack
+                                    + "\n```",
+                                channel_id: post.channel_id
+                            })
+                            log.trace({msg: errorPost})
+                        } catch(e2) {
+                            log.error(e2)
+                        }
                     }
                 }
             }
