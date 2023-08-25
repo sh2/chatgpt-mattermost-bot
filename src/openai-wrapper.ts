@@ -9,6 +9,20 @@ import {openAILog as log} from "./logging"
 
 import {PluginBase} from "./plugins/PluginBase";
 import {AiResponse, MessageData} from "./types";
+import {SocksProxyAgent} from "socks-proxy-agent";
+import {AxiosRequestConfig} from "axios";
+
+// SOCK proxy configuration
+let proxyConfig: AxiosRequestConfig | undefined = undefined
+
+if (process.env["SOCKS_PROXY"]) {
+    const proxyAgent = new SocksProxyAgent(process.env["SOCKS_PROXY"])
+    proxyConfig = {
+        proxy: false,
+        httpAgent: proxyAgent,
+        httpsAgent: proxyAgent
+    }
+}
 
 const apiKey = process.env['OPENAI_API_KEY'];
 log.trace({apiKey})
@@ -148,7 +162,7 @@ export async function createChatCompletion(messages: ChatCompletionRequestMessag
 
     log.trace({chatCompletionOptions})
 
-    const chatCompletion = await openai.createChatCompletion(chatCompletionOptions)
+    const chatCompletion = await openai.createChatCompletion(chatCompletionOptions, proxyConfig)
 
     log.trace({chatCompletion})
 
