@@ -1,3 +1,26 @@
+# パッチの内容
+
+- Azure OpenAIに対応
+- SOCKSプロキシーに対応
+- チャンネルヘッダーをシステムプロンプトとして使う
+- ai-で始まるユーザーの発言に反応させない
+- エラー発生時にスタックトレースを出力する
+
+```
+export MATTERMOST_URL=http://<mattermost-server>:8065/<path>
+export MATTERMOST_TOKEN=...
+export MATTERMOST_BOTNAME='@<botname>'
+export OPENAI_DEPLOYMENT_NAME=<deployment_name>
+export OPENAI_MODEL_NAME=<model_name>
+export OPENAI_API_VERSION=2023-07-01-preview
+export OPENAI_API_KEY=...
+export SOCKS_PROXY=socks://localhost:1080
+export DEBUG_LEVEL=TRACE
+
+ssh -D 1080 <azure_vm>
+npm start
+```
+
 # A ChatGPT-powered Chatbot for Mattermost
 
 ![A chat window in Mattermost showing the chat between the OpenAI bot and "yGuy"](./mattermost-chat.png)
