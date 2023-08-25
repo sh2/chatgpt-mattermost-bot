@@ -13,15 +13,32 @@ import {AiResponse, MessageData} from "./types";
 const apiKey = process.env['OPENAI_API_KEY'];
 log.trace({apiKey})
 
-const configuration = new Configuration({ apiKey })
-
-const openai = new OpenAIApi(configuration)
-
+const deployment = process.env['OPENAI_DEPLOYMENT_NAME'] ?? 'deployment'
 const model = process.env['OPENAI_MODEL_NAME'] ?? 'gpt-3.5-turbo'
+
+// Supported API versions
+// https://learn.microsoft.com/en-US/azure/ai-services/openai/reference#chat-completions
+const api_version = process.env['OPENAI_API_VERSION'] ?? '2023-07-01-preview'
+
 const max_tokens = Number(process.env['OPENAI_MAX_TOKENS'] ?? 2000)
 const temperature = Number(process.env['OPENAI_TEMPERATURE'] ?? 1)
 
-log.debug({model, max_tokens, temperature})
+log.debug({deployment, model, api_version, max_tokens, temperature})
+
+// Configuration for Azure OpenAI
+// https://github.com/openai/openai-node/issues/53#issuecomment-1517604780
+const configuration = new Configuration({
+    apiKey,
+    basePath: `https://${deployment}.openai.azure.com/openai/deployments/${model}`,
+    baseOptions: {
+      headers: {'api-key': apiKey},
+      params: {
+        'api-version': api_version
+      }
+    }
+})
+
+const openai = new OpenAIApi(configuration)
 
 const plugins: Map<string, PluginBase<any>> = new Map()
 const functions: ChatCompletionFunctions[] = []
