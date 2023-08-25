@@ -29,11 +29,6 @@ const plugins: PluginBase<any>[] = [
     new MessageCollectPlugin("message-collect-plugin", "Collects messages in the thread for a specific user or time"),
 ]
 
-/* The main system instruction for GPT */
-const botInstructions = "Your name is " + name + " and you are a helpful assistant. Whenever users asks you for help you will " +
-    "provide them with succinct answers formatted using Markdown. You know the user's name as it is provided within the " +
-    "meta data of the messages."
-
 async function onClientMessage(msg: WebSocketMessage<JSONMessageData>, meId: string) {
     if (msg.event !== 'posted' || !meId) {
         matterMostLog.debug({msg: msg})
@@ -50,7 +45,7 @@ async function onClientMessage(msg: WebSocketMessage<JSONMessageData>, meId: str
     const chatmessages: ChatCompletionRequestMessage[] = [
         {
             role: ChatCompletionRequestMessageRoleEnum.System,
-            content: botInstructions
+            content: (await mmClient.getChannel(msgData.post.channel_id)).header
         },
     ]
 
