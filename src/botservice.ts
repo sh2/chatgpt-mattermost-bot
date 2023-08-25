@@ -92,7 +92,10 @@ async function onClientMessage(msg: WebSocketMessage<JSONMessageData>, meId: str
     } catch (e) {
         botLog.error(e)
         await mmClient.createPost({
-            message: "Sorry, but I encountered an internal error when trying to process your message",
+            message: "Sorry, but I encountered an internal error when trying to process your message\n"
+            + "```\n"
+            + (e instanceof Error ? e.stack : '')
+            + "\n```",
             channel_id: msgData.post.channel_id,
             root_id: msgData.post.root_id || msgData.post.id,
         })
