@@ -37,8 +37,9 @@ async function onClientMessage(msg: WebSocketMessage<JSONMessageData>, meId: str
 
     const msgData = parseMessageData(msg.data)
     const posts = await getOlderPosts(msgData.post, {lookBackTime: 1000 * 60 * 60 * 24})
+    const username = (await mmClient.getUser(msgData.post.user_id)).username
 
-    if (isMessageIgnored(msgData, meId, posts)) {
+    if (isMessageIgnored(msgData, meId, posts, username)) {
         return
     }
 
@@ -107,8 +108,9 @@ async function onClientMessage(msg: WebSocketMessage<JSONMessageData>, meId: str
  * @param msgData The parsed message data
  * @param meId The mattermost client id
  * @param previousPosts Older posts in the same channel
+ * @param username The username who spoke up
  */
-function isMessageIgnored(msgData: MessageData, meId: string, previousPosts: Post[]): boolean {
+function isMessageIgnored(msgData: MessageData, meId: string, previousPosts: Post[], username: string): boolean {
     // we are not in a thread and not mentioned
     if (msgData.post.root_id === '' && !msgData.mentions.includes(meId)) {
         return true
@@ -116,6 +118,11 @@ function isMessageIgnored(msgData: MessageData, meId: string, previousPosts: Pos
 
     // it is our own message
     if (msgData.post.user_id === meId) {
+        return true
+    }
+
+    // message from another AI
+    if (username.startsWith('ai-')) {
         return true
     }
 
